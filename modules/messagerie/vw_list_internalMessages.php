@@ -1,0 +1,49 @@
+<?php /** $Id: vw_list_internalMessages.php 28343 2015-05-20 15:27:05Z asmiane $ **/
+
+/**
+* @package Mediboard
+* @subpackage messagerie
+* @version $Revision: 28343 $
+* @author Fabien
+*/
+
+CCanDo::checkRead();
+
+$user_id = CValue::get('user_id');
+
+$user = new CMediusers();
+$user->load($user_id);
+
+if (!$user->_id) {
+  $user = CMediusers::get();
+}
+
+$selected_folder = CValue::get('selected_folder', 'inbox');
+
+// Liste des messages reçus
+$listInboxUnread = CUserMessageDest::countUnreadFor($user);
+
+// Liste des messages archivés
+$listArchived = CUserMessageDest::countArchivedFor($user);
+
+// Liste des messages envoyés
+$listSent = CUserMessageDest::countSentFor($user);
+
+// Liste des brouillons
+$countListDraft = CUserMessageDest::countDraftedFor($user);
+
+$folders = array(
+  'inbox'   => $listInboxUnread,
+  'archive' => $listArchived,
+  'sentbox' => $listSent,
+  'draft'   => $countListDraft
+);
+
+// Création du template
+$smarty = new CSmartyDP();
+
+$smarty->assign("user"            , $user);
+$smarty->assign('folders'         , $folders);
+$smarty->assign('selected_folder' , $selected_folder);
+
+$smarty->display("vw_list_usermessages.tpl");

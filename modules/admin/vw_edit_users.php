@@ -1,0 +1,86 @@
+<?php
+
+/**
+ * $Id: vw_edit_users.php 25142 2014-10-07 12:16:51Z phenxdesign $
+ *
+ * @category Admin
+ * @package  Mediboard
+ * @author   SARL OpenXtrem <dev@openxtrem.com>
+ * @license  GNU General Public License, see http://www.gnu.org/licenses/gpl.html
+ * @version  $Revision: 25142 $
+ * @link     http://www.mediboard.org
+ */
+
+CCanDo::checkEdit();
+
+// Récuperation de l'utilisateur sélectionné
+$user_id = CValue::getOrSession("user_id");
+$user = $user_id == "0" ? new CUser() : CUser::get($user_id);
+
+// Récuperation des utilisateurs recherchés
+$user_username   = CValue::getOrSession("user_username"  );
+$user_last_name  = CValue::getOrSession("user_last_name" );
+$user_first_name = CValue::getOrSession("user_first_name");
+$user_type       = CValue::getOrSession("user_type"      );
+$template        = CValue::getOrSession("template"       );
+
+// Where clause
+$where = null;
+if ($user_last_name) {
+  $where["user_last_name"]  = "LIKE '$user_last_name%'";
+}
+if ($user_first_name) {
+  $where["user_first_name"] = "LIKE '$user_first_name%'";
+}
+if ($user_username) {
+  $where["user_username"]   = "LIKE '$user_username%'";
+}
+if ($user_type) {
+  $where["user_type"]       = "= '$user_type'";
+}
+if ($template != null) {
+  $where["template"]        = "= '$template'";
+}
+
+// Query
+$users = null;
+if ($where) {
+  $order = "user_type, user_last_name, user_first_name, template";
+  $limit = 100;
+  $users = $user->loadList($where, $order, $limit);
+  CStoredObject::massCountBackRefs($users, "profiled_users");
+  CStoredObject::massCountBackRefs($users, "authentications");
+  
+  // Auto sélection du user s'il est unique
+  if (count($users) == 1 && $user_id !== "0") {
+    $user = reset($users);
+  }
+}
+
+// Chargement du détail de l'utilisateur
+$user->loadRefMediuser();
+$user->loadRefsNotes();
+$user->isLDAPLinked();
+
+// Chargement des conexions
+$user->countConnections();
+
+// Chargement des utilateurs associés
+if ($user->template) {
+  $user->loadRefProfiledUsers();
+}
+
+// Création du template
+$smarty = new CSmartyDP();
+
+$smarty->assign("template"       , $template       );
+$smarty->assign("user_last_name" , $user_last_name );
+$smarty->assign("user_first_name", $user_first_name);
+$smarty->assign("user_username"  , $user_username  );
+$smarty->assign("user_type"      , $user_type      );
+$smarty->assign("utypes"         , CUser::$types   );
+$smarty->assign("users"          , $users          );
+$smarty->assign("user"           , $user           );
+$smarty->assign("specs"          , $user->getProps());
+
+$smarty->display("vw_edit_users.tpl");

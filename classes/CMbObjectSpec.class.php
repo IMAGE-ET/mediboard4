@@ -1,0 +1,76 @@
+<?php 
+/**
+ * $Id: CMbObjectSpec.class.php 25926 2014-11-18 10:44:36Z armengaudmc $
+ * 
+ * @package    Mediboard
+ * @subpackage classes
+ * @author     SARL OpenXtrem <dev@openxtrem.com>
+ * @license    GNU General Public License, see http://www.gnu.org/licenses/gpl.html 
+ * @version    $Revision: 25926 $
+ */
+
+class CMbObjectSpec {
+  // Specification fields
+  public $incremented         = true;
+  public $loggable            = true;
+  public $merge_type          = null;     // allow to specify a particular type of merging. null|fast|check|none
+  public $nullifyEmptyStrings = true;
+  public $dsn                 = "std";
+
+  /** @var string|null Table name */
+  public $table               = null;
+  /** @var string|null Primary key colemn name */
+  public $key                 = null;
+  /** @var array|null [experimental] Temporary loading restrain to a field collection when defined */
+  public $columns              = null;
+  /** @var bool  */
+  public $archive             = false;
+
+  public $measureable         = false;
+  public $insert_delayed      = false;
+
+  public $uniques             = array();
+  public $xor                 = array();
+  public $events              = array();
+
+  /** @var CSQLDataSource */
+  public $ds = null;
+  
+  /**
+   * Initialize derivate fields
+   *
+   * @return void
+   */
+  public function init() {
+    $this->ds = CSQLDataSource::get($this->dsn, $this->dsn != "std");
+  }
+  
+  /**
+   * toString method to be used in the HTML for the form className
+   *
+   * @return string The spec as string
+   */
+  function __toString(){
+    $specs = array();
+    foreach ($this->xor as $xor) {
+      $specs[] = "xor|".implode("|", $xor);
+    }
+    return implode(" ", $specs);
+  }
+
+  /**
+   * @see parent::__sleep()
+   */
+  function __sleep() {
+    $vars = get_object_vars($this);
+    unset($vars["ds"]);
+    return array_keys($vars);
+  }
+
+  /**
+   * @see parent::__wakeup()
+   */
+  function __wakeup() {
+//    $this->init();
+  }
+}

@@ -1,0 +1,102 @@
+<?php 
+/**
+ * $Id: vw_edit_tarifs.php 19484 2013-06-09 12:26:54Z mytto $
+ *
+ * @package    Mediboard
+ * @subpackage dPfacturation
+ * @author     SARL OpenXtrem <dev@openxtrem.com>
+ * @license    GNU General Public License, see http://www.gnu.org/licenses/gpl.html 
+ * @version    $Revision: 19484 $
+ */
+
+CCanDo::checkEdit();
+// Edite t'on un tarif ?
+$tarif_id = CValue::getOrSession("tarif_id");
+$tarif = new CTarif;
+$tarif->load($tarif_id);
+if (!$tarif->getPerm(PERM_EDIT)) {
+  CAppUI::setMsg("Vous n'avez pas le droit de modifier ce tarif");
+  $tarif = new CTarif;
+}
+$tarif->loadRefsNotes();
+$tarif->getSecteur1Uptodate();
+$tarif->loadView();
+$tarif->getPrecodeReady();
+
+// L'utilisateur est-il praticien ?
+$user = CAppUI::$user;
+$user->loadRefFunction();
+
+$prat = new CMediusers();
+$prat->load($user->_id);
+$prat->loadRefFunction();
+
+// Liste des tarifs du praticien
+$listeTarifsChir = null;
+
+$order = "description";
+if ($user->isPraticien()) {
+  $where = array();
+  $where["function_id"] = "IS NULL";
+  $where["chir_id"] = "= '$user->user_id'";
+  $listeTarifsChir = $tarif->loadList($where, $order);
+}
+
+if ($user->isSecretaire()) {
+  $prat_id = CValue::getOrSession("prat_id");
+
+  // Toujours choisir le praticien du tarif choisi
+  if ($tarif->_id && $tarif->chir_id) {
+    $prat_id = $tarif->chir_id;
+    CValue::setSession("prat_id", $prat_id);
+  }
+
+  if ($prat_id) {
+    $prat->load($prat_id);
+    $prat->loadRefFunction();
+    $where = array();
+    $where["function_id"] = "IS NULL";
+    $where["chir_id"] = "= '$prat->_id'";
+    $listeTarifsChir = $tarif->loadList($where, $order);
+  }
+}
+
+// Liste des tarifs de la spécialité
+$where                = array();
+$where["chir_id"]     = "IS NULL";
+$where["function_id"] = "= '$prat->function_id'";
+
+$listeTarifsSpe = new CTarif();
+$listeTarifsSpe = $listeTarifsSpe->loadList($where, $order);
+
+$listeTarifsEtab = array();
+if (CAppUI::conf("dPcabinet Tarifs show_tarifs_etab")) {
+  // Liste des tarifs de la spécialité
+  $where = array();
+  $where["chir_id"] = "IS NULL";
+  $where["function_id"] = "IS NULL";
+  $where["group_id"] = "= '".CGroups::loadCurrent()->_id."'";
+  $listeTarifsEtab = new CTarif();
+  $listeTarifsEtab = $listeTarifsEtab->loadList($where, $order);
+}
+
+// Liste des praticiens du cabinet -> on ne doit pas voir les autres...
+$listPrat = $user->isSecretaire() ?
+  CConsultation::loadPraticiens(PERM_READ) :
+  $listPrat = array($user->_id => $user);
+
+if (!$tarif->_id) {
+  $tarif->secteur1 = 0;
+}
+// Création du template
+$smarty = new CSmartyDP();
+
+$smarty->assign("user"           , $user);
+$smarty->assign("listeTarifsChir", $listeTarifsChir);
+$smarty->assign("listeTarifsSpe" , $listeTarifsSpe);
+$smarty->assign("listeTarifsEtab", $listeTarifsEtab);
+$smarty->assign("tarif"          , $tarif);
+$smarty->assign("prat"           , $prat);
+$smarty->assign("listPrat"       , $listPrat);
+
+$smarty->display("../../dPcabinet/templates/vw_edit_tarifs.tpl");

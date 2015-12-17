@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Mediboard" default="test">
+
+  <target name="test"
+          depends="prepare,phpunit"
+          description="Run functional test"/>
+
+  <target name="metrics"
+          depends="prepare,phpcs,phploc"
+          description=""/>
+
+  <target name="clean" unless="clean.done" description="Cleanup build artifacts">
+    <delete dir="${basedir}/build/logs"/>
+
+    <property name="clean.done" value="true"/>
+  </target>
+
+  <target name="prepare" unless="prepare.done" depends="clean" description="Prepare for build">
+    <mkdir dir="${basedir}/build/logs"/>
+    <property name="prepare.done" value="true"/>
+  </target>
+
+
+  <!-- ============================================  -->
+  <!-- Target: PHPunit, functional test              -->
+  <!-- ============================================  -->
+  <target name="phpunit"
+          unless="phpunit.done"
+          depends="prepare"
+          description="Run unit tests with PHPUnit">
+    <exec executable="phpunit" failonerror="true" taskname="phpunit">
+      <arg value="--configuration"/>
+      <arg path="${basedir}/phpunit.xml"/>
+    </exec>
+    <property name="phpunit.done" value="true"/>
+  </target>
+
+  <!-- ============================================  -->
+  <!-- Target: PHPCS (PHP Code Sniffer)              -->
+  <!-- ============================================  -->
+  <target name="phpcs"
+    unless="phpcs.done"
+    depends="prepare"
+    description="Find coding standard violations using PHP_CodeSniffer and log result in XML format. Intended for usage within a continuous integration environment.">
+    <exec executable="phpcs" output="/dev/null" taskname="phpcs">
+      <arg value="--report=checkstyle" />
+      <arg value="--report-file=${basedir}/build/logs/checkstyle.xml" />
+      <arg value="--standard=${basedir}/dev/CodeSniffer/Standard" />
+      <arg path="${basedir}/" />
+    </exec>
+    <property name="phpcs.done" value="true"/>
+  </target>
+
+  <!-- ============================================  -->
+  <!-- Target: PHPLoc (PHP Lines of Code)            -->
+  <!-- ============================================  -->
+  <target name="phploc"
+          unless="phploc.done"
+          depends="prepare"
+          description="Measure project size using PHPLOC and log result in CSV and XML format. Intended for usage within a continuous integration environment.">
+    <exec executable="phploc" taskname="phploc">
+      <arg value="--count-tests" />
+      <arg value="--log-csv" />
+      <arg path="${basedir}/build/logs/phploc.csv" />
+      <arg path="${basedir}" />
+    </exec>
+    <property name="phploc.done" value="true"/>
+  </target>
+
+</project>

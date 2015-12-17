@@ -1,0 +1,69 @@
+<?php
+
+/**
+ * dPcim10
+ *
+ * @category Cim10
+ * @package  Mediboard
+ * @author   SARL OpenXtrem <dev@openxtrem.com>
+ * @license  GNU General Public License, see http://www.gnu.org/licenses/gpl.html
+ * @version  SVN: $Id: vw_find_code.php 27313 2015-02-25 13:23:18Z flaviencrochard $
+ * @link     http://www.mediboard.org
+ */
+
+CCanDo::checkRead();
+
+$lang   = CValue::getOrSession("lang", CCodeCIM10::LANG_FR);
+$code   = CValue::getOrSession("code", "");
+$keys   = CValue::getOrSession("keys", "");
+$level1 = CValue::getOrSession("level1", "");
+$level2 = CValue::getOrSession("level2", "");
+
+if (CValue::session("code") || CValue::session("keys")) {
+  $level1 = "";
+  CValue::setSession("level1");
+}
+if (!$level1) {
+  $level2 = "";
+  CValue::setSession("level2");
+}
+
+$cim10 = new CCodeCIM10();
+
+$listLevel1 = $cim10->getSommaire($lang);
+$listLevel2 = array();
+
+$master = array();
+
+$keys = trim($keys);
+$code = trim($code);
+
+if ($code || $keys) {
+  $master = $cim10->findCodes($code, $keys, $lang);
+}
+elseif ($level2) {
+  $listLevel2 = $cim10->getSubCodes($level1, $lang);
+  $master = $cim10->getSubCodes($level2, $lang);
+}
+elseif ($level1) {
+  $listLevel2 = $cim10->getSubCodes($level1, $lang);
+  $master = $listLevel2;
+}
+
+$numresults = count($master);
+
+// Création du template
+$smarty = new CSmartyDP();
+
+$smarty->assign("cim10"     , $cim10);
+$smarty->assign("lang"      , $lang);
+$smarty->assign("code"      , $code);
+$smarty->assign("keys"      , $keys);
+$smarty->assign("level1"    , $level1);
+$smarty->assign("level2"    , $level2);
+$smarty->assign("listLevel1", $listLevel1);
+$smarty->assign("listLevel2", $listLevel2);
+$smarty->assign("master"    , $master);
+$smarty->assign("numresults", $numresults);
+
+$smarty->display("vw_find_code.tpl");

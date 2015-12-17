@@ -1,0 +1,97 @@
+/* Menu principal */
+#menubar table {
+  border: 0;
+  border-spacing: 0;
+  background: url(./images/pictures/acier.png) repeat-x scroll bottom left;
+}
+
+.modal {
+  border: 2px solid #fff;
+  background: url(./images/pictures/acierOnglet.png) repeat;
+}
+
+#menubar table td.textSelected,
+#menubar table td.textNonSelected {
+  border-style: inset;
+  border-width: 0 1px;
+  border-color: #888;
+  padding: 0 2px 3px;
+}
+
+#menubar table td.iconSelected,
+#menubar table td.textSelected {
+  background: url(./images/icons/blue.png) repeat;
+}
+
+#menubar table td:hover {
+  background: url(./images/icons/vert.png) repeat;
+}
+
+#menubar table td.noHover:hover {
+  background: transparent;
+}
+
+#menubar button.triggerHide,
+#menubar button.triggerHide:hover {
+  border: 0;
+  width: 10px;
+  height: 10px;
+  background: url(./images/icons/up.png) no-repeat scroll bottom center;
+  cursor: pointer;
+}
+
+#menubar button.triggerShow,
+#menubar button.triggerShow:hover {
+  border: 0;
+  width: 10px;
+  height: 10px;
+  background: url(./images/icons/down.png) no-repeat scroll bottom center;
+  cursor: pointer;
+}
+
+/* Onglets de module */
+
+table.tabmenu td {
+  background: url(./images/icons/tabBg.png) repeat-x bottom;
+}
+
+table.tabmenu td.left,
+table.tabmenu td.right {
+  width: 10px;
+}
+
+table.tabmenu td.left {
+  background: url(./images/icons/tabLeft.png) no-repeat bottom right;
+}
+
+table.tabmenu td.right {
+  background: url(./images/icons/tabRight.png) no-repeat bottom left;
+}
+
+table.tabmenu td.selected {
+  background: url(./images/icons/tabSelectedBg.png) repeat-x;
+}
+
+table.tabmenu td.selected.left {
+  background: url(./images/icons/tabSelectedLeft2.png) no-repeat bottom right;
+}
+
+table.tabmenu td.selected.right {
+  background: url(./images/icons/tabSelectedRight2.png) no-repeat bottom left;
+}
+
+/* panneau d'affichage */
+table.tabview td.tabox {
+  background: url(./images/pictures/acierOnglet.png) repeat;
+}
+
+/* Menus items hidden from print media */
+@media print {
+  #leftMenu, #mainHeader {
+    display: none;
+  }
+}
+
+span.circled.color-th{
+  border-color:#888;
+}

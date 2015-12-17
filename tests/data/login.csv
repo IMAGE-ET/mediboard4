@@ -1,0 +1,6 @@
+-- login, passwd, expected
+loginzz,mdp,fail
+selenium,test,pass
+,mdp,fail
+,,fail
+login,,fail

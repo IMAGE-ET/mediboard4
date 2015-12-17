@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+  bootstrap="tests/autoload.php"
+  backupGlobals="false"
+  backupStaticAttributes="true"
+  cacheTokens="false"
+  colors="true"
+  convertErrorsToExceptions="true"
+  convertNoticesToExceptions="true"
+  convertWarningsToExceptions="true"
+  processIsolation="false"
+  stopOnError="false"
+  stopOnFailure="false"
+  stopOnIncomplete="false"
+  stopOnSkipped="false"
+  verbose="true">
+    <testsuites>
+      <testsuite name="MyTestSuite">
+        <file>tests/functional/LoginTest.php</file>
+        <file>tests/functional/NavigationTest.php</file>
+        <file>tests/functional/CreatePatientTest.php</file>
+        <file>modules/dPcabinet/tests/CreatePlageConsultationTest.php</file>
+        <file>modules/dPcabinet/tests/CreateConsultationTest.php</file>
+      </testsuite>
+    </testsuites>
+    <logging>
+        <log type="junit" target="./build/logs/logfile.xml" logIncompleteSkipped="false"/>
+    </logging>
+</phpunit>

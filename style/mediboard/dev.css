@@ -1,0 +1,96 @@
+/* $Id: $ */
+
+/* To put on elements visible only by admins */
+.admin-view {
+  outline: 1px dotted #DF3737;
+}
+
+span.smarty-include {
+  background: #444;
+  position: absolute;
+  color: #fff;
+  opacity: 0.7;
+  text-indent: 0.9em;    
+  width: 5px;
+  height: 5px;
+  overflow: hidden;
+  font-family: "lucida console", "courier new", courier, monospace;
+  border: 1px solid #fff;
+}
+
+span.smarty-include.ajax {
+  background: #494;
+}
+
+span.smarty-include:hover {
+  opacity: 1;
+  width: auto;
+  height: auto;
+  padding: 5px 10px;
+}
+
+/* Debug console */
+#console {
+  font-family: "lucida console", "courier new", courier, monospace;
+  font-size: 10px;
+  margin: 5px;
+  max-height: 300px;
+  width: 50%;
+  overflow: auto;
+  background: #333;
+  color: #fff;
+  opacity: 0.8;
+  position: fixed;
+  bottom: 0;
+  border: none;
+  padding: 0;
+  border-radius: 4px;
+  z-index: 1500;
+}
+
+#console div {
+  background: transparent;
+  padding: 0;
+}
+
+#console .title {
+  text-align: center;
+  padding: 2px;
+  background: #000;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+#console .body {
+  padding: 3px;
+}
+
+#console .title .close,
+#console .title .toggle {
+  font-weight: bold;
+  color: #fff;
+  cursor: pointer;
+  float: left;
+  display: -moz-inline-box;
+  display: inline-block;
+  padding: 0 3px;
+}
+
+#console .title .close:hover,
+#console .title .toggle:hover {
+  color: #f66;
+}
+
+#console div.key {
+  color: #9f9;
+  float: left;
+}
+
+#console div.error,
+#console div.warning {
+  color: #f66;
+}
+
+#console div.value {
+  color: #fff;
+}

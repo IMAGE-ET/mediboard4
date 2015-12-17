@@ -1,0 +1,57 @@
+<?php
+/**
+ * Interop Sender File System
+ * $Id: CSenderFileSystem.class.php 25668 2014-11-03 11:19:46Z nicolasld $
+ *
+ * @package    Mediboard
+ * @subpackage System
+ * @author     SARL OpenXtrem <dev@openxtrem.com>
+ * @license    GNU General Public License, see http://www.gnu.org/licenses/gpl.html
+ * @version    $Revision: 25668 $
+ */
+
+/**
+ * Class CSenderFileSystem
+ * Interoperability Sender File System
+ */
+class CSenderFileSystem extends CInteropSender {
+  // DB Table key
+  public $sender_file_system_id;
+    
+  function getSpec() {
+    $spec = parent::getSpec();
+    $spec->table = 'sender_file_system';
+    $spec->key   = 'sender_file_system_id';
+
+    return $spec;
+  }
+  
+  function getBackProps() {
+    $backProps = parent::getBackProps();
+    $backProps["expediteur_hprimxml"]   = "CEchangeHprim sender_id";
+    $backProps["expediteur_hprimsante"] = "CExchangeHprimSante sender_id";
+    $backProps["expediteur_hprim21"]    = "CEchangeHprim21 sender_id";
+    $backProps["expediteur_hl7v2"]      = "CExchangeHL7v2 sender_id";
+    $backProps["expediteur_hl7v3"]      = "CExchangeHL7v3 sender_id";
+    $backProps["expediteur_dmp"]        = "CExchangeDMP sender_id";
+    $backProps["expediteur_phast"]      = "CExchangePhast sender_id";
+    $backProps["expediteur_any"]        = "CExchangeAny sender_id";
+    $backProps["expediteur_mvsante"]    = "CExchangeMVSante sender_id";
+
+    $backProps["config_hprimsante"]   = "CHPrimSanteConfig sender_id";
+    $backProps["config_hprimxml"]     = "CHprimXMLConfig sender_id";
+    $backProps["config_hl7"]          = "CHL7Config sender_id";
+    $backProps["config_mvsante"]      = "CMVSanteXMLConfig sender_id";
+        
+    return $backProps;
+  }
+  
+  function loadRefsExchangesSources() {
+    $source_fs = CExchangeSource::get("$this->_guid", "file_system", true, $this->_type_echange, false);
+    $this->_ref_exchanges_sources[$source_fs->_guid] = $source_fs;
+  }
+  
+  function read() {
+    $this->loadRefsExchangesSources();
+  }
+}

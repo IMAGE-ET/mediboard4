@@ -1,0 +1,74 @@
+<?php
+/**
+ * Installation file access checker
+ *  
+ * @package    Mediboard
+ * @subpackage Installer
+ * @author     SARL OpenXtrem <dev@openxtrem.com>
+ * @license    GNU General Public License, see http://www.gnu.org/licenses/gpl.html 
+ * @version    SVN: $Id: 02_fileaccess.php 18445 2013-03-17 16:08:44Z phenxdesign $ 
+ * @link       http://www.mediboard.org
+ */
+
+require_once "includes/checkauth.php";
+
+showHeader();
+
+?>
+
+<h2>Vérification des accès en écriture</h2>
+
+<p>
+  Le système a besoin de pouvoir écrire un certain nombre de fichiers pour son 
+  fonctionnement.
+</p>
+
+<p>
+  La présente page vérifie que les permissions en écriture de PHP sur ces 
+  différents chemins.
+</p>
+
+<div class="big-warning">
+  Il est très vivement déconseillé de s'affranchir des problèmes de permissions en rendant 
+  toute l'arborescence du système accessible en écriture. Cette méthode engendrerait
+  potentiellement une grande faille de sécurité.
+  <br />
+  Mediboard propose un script shell permettant d'établir ses permissions de façon 
+  automatique. C'est le bon moment pour exécuter ce script si ce n'est pas déjà fait !
+  <pre>sh [racine/de/mediboard/]shell/setup.sh</pre>
+  Si cette exécution pose problème, essayez de l'exécuter avec le paramètre suivant :
+  <pre>sh [racine/de/mediboard/]shell/setup.sh -g [groupe apache]</pre>
+  Exemples de valeurs pour [groupe apache] :
+  <ul>
+    <li>Sur Ubuntu : www-data</li>
+    <li>Sur Mac Os X : _www</li>
+  </ul>
+</div>
+
+<table class="tbl">
+
+<tr>
+  <th>Chemin</th>
+  <th>Description</th>
+  <th>Vérification ?</th>
+</tr>
+  
+<?php 
+$pathAccess = new CPathAccess();
+foreach ($pathAccess->getAll() as $pathAccess) { ?>
+<tr>
+  <td><strong><?php echo $pathAccess->path; ?></strong></td>
+  <td class="text"><?php echo nl2br($pathAccess->description); ?></td>
+  <td>
+    <?php if ($pathAccess->check()) { ?>
+    <div class="info">Ok</div>
+    <?php } else { ?>
+    <div class="error">Erreur</div>
+    <?php } ?>
+  </td>
+</tr>
+<?php } ?>
+  
+</table>
+
+<?php showFooter(); ?>

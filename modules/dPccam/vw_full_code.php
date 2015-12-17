@@ -1,0 +1,45 @@
+<?php
+/**
+ * $Id: vw_full_code.php 24216 2014-07-29 15:23:26Z rhum1 $
+ *
+ * @package    Mediboard
+ * @subpackage ccam
+ * @author     SARL OpenXtrem <dev@openxtrem.com>
+ * @license    GNU General Public License, see http://www.gnu.org/licenses/gpl.html
+ * @version    $Revision: 24216 $
+ */
+
+CCanDo::checkRead();
+$codeacte     = CValue::getOrSession("_codes_ccam");
+$object_class = CValue::get("object_class", "COperation");
+$hideSelect   = CValue::get("hideSelect", 0);
+
+$code = CDatedCodeCCAM::get($codeacte);
+
+// Variable permettant de savoir si l'affichage du code complet est necessaire
+$codeComplet = false;
+$codeacte = $code->code;
+
+if ($code->_activite != "") {
+  $codeComplet = true;
+  $codeacte .= "-$code->_activite";  
+  if ($code->_phase != "") {
+    $codeacte .= "-$code->_phase";
+  }
+}
+
+$codeacte = strtoupper($codeacte);
+
+$favoris = new CFavoriCCAM();
+
+// Création du template
+$smarty = new CSmartyDP();
+
+$smarty->assign("code"         , $code);
+$smarty->assign("codeComplet"  , $codeComplet);
+$smarty->assign("favoris"      , $favoris);
+$smarty->assign("codeacte"     , $codeacte);
+$smarty->assign("object_class" , $object_class);
+$smarty->assign("hideSelect"   , $hideSelect);
+
+$smarty->display("vw_full_code.tpl");

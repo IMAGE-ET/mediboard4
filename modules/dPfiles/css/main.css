@@ -1,0 +1,27 @@
+#modal-yoplet td.warning, td.cross {
+  background: url(../../../style/mediboard/images/buttons/cancel.png) no-repeat 6px;
+}
+
+img#thumb {
+  box-shadow: 0 6px 10px rgba(0,0,0,0.4);
+}
+
+.preview {
+  border: 1px solid #aaa;
+  background: #fff;
+}
+
+.thumb_selected {
+  background-color: rgba(77, 134, 219, 0.24);
+}
+
+.thumb_mbhost {
+  display: inline-block;
+  width: 160px;
+  height: 180px;
+  border: 1px solid #666;
+  margin: 1px;
+  padding: 2px;
+  vertical-align: top;
+  text-align: center;
+}

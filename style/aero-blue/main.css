@@ -1,0 +1,194 @@
+table.tabmenu td.left {
+  background: url(../e-cap/images/icons/tabLeft.png) no-repeat center right;
+}
+
+table.tabmenu td.right {
+  background: url(../e-cap/images/icons/tabRight.png) no-repeat center left;
+}
+
+table.tabmenu td.selected {
+  background: url(../e-cap/images/icons/tabSelectedBg.png) repeat-x center;
+}
+
+table.tabmenu td.selected.left {
+  background: url(../e-cap/images/icons/tabSelectedLeft.png) no-repeat center right;
+}
+
+table.tabmenu td.selected.right {
+  background: url(../e-cap/images/icons/tabSelectedRight.png) no-repeat center left;
+}
+
+.modal {
+  border: 2px solid #eee;
+  background-color: #fff;
+}
+
+/* Main table */
+table#main {
+  padding-top:32px;
+}
+
+table#main.dialog {
+  padding-top:0;
+}
+
+/* dropdown menu */
+#main.dialog .tabox {
+  padding-top: 0;
+}
+
+#headerMenu {
+  width: 100%;
+  background: #EAEFF6;
+  border-bottom: 1px solid #AECFF7;
+  position: fixed;
+  top: 0;
+  z-index: 1150;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+#headerMenu td {
+  white-space: nowrap;
+  vertical-align: middle;
+  line-height: 16px;
+}
+
+#headerMenu td.message {
+  width: 100%;
+}
+
+#headerMenu td.end {
+  text-align: right;
+  width: 1%;
+}
+
+#headerMenu td.titlecell {
+  height: 0;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #000;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+#headerMenu td.menuTitle {
+  width: 16em;
+  border-right: 1px solid #fcfcfc;
+}
+
+#headerMenu .dropdown-menu {
+  vertical-align: middle;
+  position: relative;
+  cursor: pointer;
+  padding: 4px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: url(../aero-blue/images/icons/menu.png) no-repeat 6px 0;
+  text-indent: 20px;
+}
+
+#headerMenu .dropdown-menu ul {
+  max-height:500px;
+  overflow-y: auto;
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 21px;
+  z-index: 1000;
+  list-style-type: none;
+  padding: 2px;
+  margin: 0;
+  width: 100%;
+  border: 1px solid #BBB;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  background: #F0F0F0;
+  text-indent: 0;
+}
+
+#headerMenu .dropdown-menu:hover ul {
+  display: block;
+}
+
+#headerMenu .dropdown-menu img {
+  padding-right: 4px;
+  width: 16px;
+  height: 16px;
+  border: none;
+}
+
+#headerMenu .dropdown-menu a {
+  display: block;
+  padding: 2px;
+  vertical-align: middle;
+  border: 1px solid transparent;
+  border-radius: 2px;
+}
+
+#headerMenu .dropdown-menu a,
+#headerMenu .dropdown-menu a:hover,
+#headerMenu .dropdown-menu a:visited {
+  text-decoration: none;
+}
+
+#headerMenu .dropdown-menu:hover,
+#headerMenu .dropdown-menu a:hover {
+  border: 1px solid #AECFF7;
+  background-color: #EEF2F6;
+}
+
+#headerMenu .dropdown-menu:hover {
+  background-image: url(../aero-blue/images/icons/menuHover.png);
+}
+
+#headerMenu .dropdown-menu a.selected {
+  background: #AECFF7;
+}
+
+#headerMenu .dropdown-menu a:hover.selected {
+  border-color: #71ADF2;
+}
+
+/* Onglets de module */
+td.tabview {
+  padding-top:30px;
+}
+
+
+.tabmenu li {
+  margin-left: 3px;
+  display: inline-block;
+  position: relative;
+  top: 1px;
+  vertical-align: bottom;
+}
+
+td.tabox {
+  background-color: #fff;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+table.main {
+  border: 0;
+}
+
+table.tbl td,
+table.tbl th {
+  border-color: #ddd;
+}
+
+/* modal */
+div.modal {
+  margin-top: 32px!important;
+}
+
+#usermessage_notification a {
+    top:38px;
+}
+
+span.circled.color-th{
+  border-color:#68c;
+}

@@ -1,0 +1,96 @@
+<?php
+/**
+ * $Id: ajax_refresh_sortie.php 22288 2014-03-04 10:34:24Z nicolasld $
+ *
+ * @package    Mediboard
+ * @subpackage Urgences
+ * @author     SARL OpenXtrem <dev@openxtrem.com>
+ * @license    GNU General Public License, see http://www.gnu.org/licenses/gpl.html
+ * @version    $Revision: 22288 $
+ */
+
+CCanDo::checkRead();
+$user = CMediusers::get();
+$group = CGroups::loadCurrent();
+
+$rpu_id = CValue::get("rpu_id");
+
+$rpu = new CRPU();
+$rpu->load($rpu_id);
+$rpu->loadRefSejour();
+
+$sejour = $rpu->_ref_sejour;
+$sejour->_ref_rpu = $rpu;
+$sejour->loadRefsFwd();
+$sejour->_ref_rpu->loadRefSejourMutation();
+$sejour_mutation = $rpu->_ref_sejour_mutation;
+$sejour_mutation->loadRefsAffectations();
+$sejour_mutation->loadRefsConsultations();
+$_nb_acte_sejour_rpu = 0;
+$valide = true;
+foreach ($sejour_mutation->_ref_consultations as $consult) {
+  $consult->countActes();
+  $_nb_acte_sejour_rpu += $consult->_count_actes;
+  if (!$consult->valide) {
+    $valide = false;
+  }
+}
+$rpu->_ref_consult->valide = $valide;
+$sejour_mutation->_count_actes = $_nb_acte_sejour_rpu;
+foreach ($sejour_mutation->_ref_affectations as $_affectation) {
+  if ($_affectation->loadRefService()->urgence) {
+    unset($sejour_mutation->_ref_affectations[$_affectation->_id]);
+    continue;
+  }
+
+  $_affectation->loadView();
+}
+$sejour->loadNDA();
+$sejour->loadRefsConsultations();
+$sejour->_ref_rpu->_ref_consult->loadRefsActes();
+// Chargement de l'IPP
+$sejour->_ref_patient->loadIPP();
+$sejour->loadRefCurrAffectation()->loadRefService();
+
+// Chargement des services
+$where = array();
+$where["cancelled"] = "= '0'";
+$service = new CService();
+$services = $service->loadGroupList($where);
+
+// Contraintes sur le mode de sortie / destination
+$contrainteDestination["mutation"]  = array("", 1, 2, 3, 4);
+$contrainteDestination["transfert"] = array("", 1, 2, 3, 4);
+$contrainteDestination["normal"] = array("", 6, 7);
+
+// Contraintes sur le mode de sortie / orientation
+$contrainteOrientation["transfert"] = array("", "HDT", "HO", "SC", "SI", "REA", "UHCD", "MED", "CHIR", "OBST");
+$contrainteOrientation["normal"] = array("", "FUGUE", "SCAM", "PSA", "REO");
+
+// Praticiens urgentistes
+$listPrats = $user->loadPraticiens(PERM_READ, $group->service_urgences_id);
+
+// Si accès au module PMSI : peut modifier le diagnostic principal
+$access_pmsi = 0;
+if (CModule::exists("dPpmsi")) {
+  $module = new CModule;
+  $module->mod_name = "dPpmsi";
+  $module->loadMatchingObject();
+  $access_pmsi = $module->getPerm(PERM_EDIT);
+}
+
+// Si praticien : peut modifier le CCMU, GEMSA et diagnostic principal
+$is_praticien = CAppUI::$user->isPraticien();
+
+// Création du template
+$smarty = new CSmartyDP();
+$smarty->assign("contrainteDestination", $contrainteDestination);
+$smarty->assign("contrainteOrientation", $contrainteOrientation);
+$smarty->assign("services", $services);
+$smarty->assign("listPrats", $listPrats);
+$smarty->assign("sejour" , $sejour);
+$smarty->assign("access_pmsi", $access_pmsi);
+$smarty->assign("is_praticien", $is_praticien);
+$smarty->assign("date" , CValue::getOrSession("date", CMbDT::date()));
+
+$smarty->display("inc_sortie_rpu.tpl");
