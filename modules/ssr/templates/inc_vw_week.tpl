@@ -1,1 +1,0 @@
-{{mb_include module=system template=calendars/vw_week}}

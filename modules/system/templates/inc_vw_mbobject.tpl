@@ -1,1 +1,0 @@
-<span onmouseover="ObjectTooltip.createEx(this, '{{$object->_guid}}')">{{$object}}</span>

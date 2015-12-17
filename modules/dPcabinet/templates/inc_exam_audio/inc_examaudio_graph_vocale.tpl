@@ -1,2 +1,0 @@
-{{$map_vocal|smarty:nodefaults}}
-<img id="image_vocal" src="?m=dPcabinet&amp;a=graph_audio_vocal&amp;suppressHeaders=1&amp;examaudio_id={{$exam_audio->_id}}&amp;time={{$time}}" usemap="#graph_vocal" onclick="changeVocalValueMouse(event)" alt="Audiogramme vocal" />
